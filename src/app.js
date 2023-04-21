@@ -28,6 +28,8 @@ const data = [
   }
 ];
 
+let currentNeuronIndex = 0;
+
 function displaySnippets(snippets) {
   snippets.forEach((snippet) => {
     const snippetDiv = document.createElement("div");
@@ -45,12 +47,19 @@ function displaySnippets(snippets) {
   });
 }
 
+function nextNeuron() {
+    currentNeuronIndex++;
+    renderSnippets();
+  }
+
 interpretableButton.addEventListener("click", () => {
   saveResult("Interpretable");
+  nextNeuron();
 });
 
 notInterpretableButton.addEventListener("click", () => {
   saveResult("Not Interpretable");
+  nextNeuron();
 });
 
 const downloadResultsButton = document.getElementById("download-results");
@@ -83,4 +92,15 @@ function downloadResults() {
   document.body.removeChild(a);
 }
 
-displaySnippets(data[0].snippets);
+function renderSnippets() {
+    snippetsContainer.innerHTML = ""; // Clear the snippets container
+  
+    if (currentNeuronIndex >= data.length) {
+      alert("All neurons have been evaluated.");
+      return;
+    }
+
+    displaySnippets(data[currentNeuronIndex].snippets);
+}
+
+renderSnippets();
