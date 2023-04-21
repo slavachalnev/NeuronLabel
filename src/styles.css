@@ -9,7 +9,6 @@ body {
   }
   .token {
     display: inline;
-    padding: 2px 4px;
   }
   .button-container {
     display: flex;
