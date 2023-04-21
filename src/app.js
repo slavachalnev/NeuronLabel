@@ -69,7 +69,7 @@ downloadResultsButton.addEventListener("click", () => {
 
 function saveResult(choice) {
   const result = {
-    neuron_id: data[0].neuron_id,
+    neuron_id: data[currentNeuronIndex].neuron_id,
     choice: choice
   };
 
@@ -101,6 +101,16 @@ function renderSnippets() {
     }
 
     displaySnippets(data[currentNeuronIndex].snippets);
+}
+
+const clearResultsButton = document.getElementById("clear-results");
+clearResultsButton.addEventListener("click", () => {
+  clearResults();
+});
+
+function clearResults() {
+  localStorage.removeItem('neuron_results');
+  alert("Results history cleared.");
 }
 
 renderSnippets();
