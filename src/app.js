@@ -2,31 +2,18 @@ const snippetsContainer = document.getElementById("snippets-container");
 const interpretableButton = document.getElementById("interpretable");
 const notInterpretableButton = document.getElementById("not-interpretable");
 
-// Replace this with the actual JSON data.
-const data = [
-  {
-    "neuron_id": 1,
-    "snippets": [
-      {
-        "tokens": ["This", " is", " a", " text", " snippet", " with", " an", " activated", " token."],
-        "activations": [0, 0, 0.5, 0, 0, 0, 0, 0, 0]
-      },
-      {
-        "tokens": ["A", " different", " activated", " token."],
-        "activations": [0, 0.8, 0.5, 0]
-      }
-    ]
-  },
-  {
-    "neuron_id": 2,
-    "snippets": [
-      {
-        "tokens": ["la", "la", "la"],
-        "activations": [0.2, 0, 0.5]
-      }
-    ]
-  }
-];
+// Fetch the JSON data
+let data;
+fetch("data.json")
+  .then((response) => response.json())
+  .then((jsonData) => {
+    data = jsonData;
+    renderSnippets();
+  })
+  .catch((error) => {
+    console.error("Error loading data.json:", error);
+  });
+
 
 let currentNeuronIndex = 0;
 
@@ -35,10 +22,10 @@ function displaySnippets(snippets) {
     const snippetDiv = document.createElement("div");
     snippetDiv.className = "snippet";
 
-    snippet.tokens.forEach((token, index) => {
+    snippet.token_activation_pairs.forEach(([token, activation]) => {
       const tokenElement = document.createElement("span");
       tokenElement.className = "token";
-      tokenElement.style.backgroundColor = `rgba(255, 0, 0, ${snippet.activations[index]})`;
+      tokenElement.style.backgroundColor = `rgba(255, 0, 0, ${activation})`;
       tokenElement.textContent = token;
       snippetDiv.appendChild(tokenElement);
     });
@@ -48,9 +35,9 @@ function displaySnippets(snippets) {
 }
 
 function nextNeuron() {
-    currentNeuronIndex++;
-    renderSnippets();
-  }
+  currentNeuronIndex++;
+  renderSnippets();
+}
 
 interpretableButton.addEventListener("click", () => {
   saveResult("Interpretable");
@@ -69,22 +56,24 @@ downloadResultsButton.addEventListener("click", () => {
 
 function saveResult(choice) {
   const result = {
-    neuron_id: data[currentNeuronIndex].neuron_id,
-    choice: choice
+    neuron_id: Object.keys(data)[currentNeuronIndex],
+    choice: choice,
   };
 
-  const resultsKey = 'neuron_results';
-  let results = JSON.parse(localStorage.getItem(resultsKey) || '[]');
+  const resultsKey = "neuron_results";
+  let results = JSON.parse(localStorage.getItem(resultsKey) || "[]");
   results.push(result);
   localStorage.setItem(resultsKey, JSON.stringify(results));
 }
 
 function downloadResults() {
-  const resultsKey = 'neuron_results';
-  const results = JSON.parse(localStorage.getItem(resultsKey) || '[]');
+  const resultsKey = "neuron_results";
+  const results = JSON.parse(localStorage.getItem(resultsKey) || "[]");
 
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(results, null, 2)], { type: "application/json" }));
+  a.href = URL.createObjectURL(
+    new Blob([JSON.stringify(results, null, 2)], { type: "application/json" })
+  );
   a.download = "results.json";
   a.style.display = "none";
   document.body.appendChild(a);
@@ -93,14 +82,14 @@ function downloadResults() {
 }
 
 function renderSnippets() {
-    snippetsContainer.innerHTML = ""; // Clear the snippets container
-  
-    if (currentNeuronIndex >= data.length) {
-      alert("All neurons have been evaluated.");
-      return;
-    }
+  snippetsContainer.innerHTML = ""; // Clear the snippets container
 
-    displaySnippets(data[currentNeuronIndex].snippets);
+  if (currentNeuronIndex >= Object.keys(data).length) {
+    alert("All neurons have been evaluated.");
+    return;
+  }
+
+  displaySnippets(data[Object.keys(data)[currentNeuronIndex]]);
 }
 
 const clearResultsButton = document.getElementById("clear-results");
@@ -109,7 +98,7 @@ clearResultsButton.addEventListener("click", () => {
 });
 
 function clearResults() {
-  localStorage.removeItem('neuron_results');
+  localStorage.removeItem("neuron_results");
   alert("Results history cleared.");
 }
 
