@@ -4,10 +4,10 @@ Neuron Label is a simple tool for visually analyzing and labeling the interpreta
 
 ## Setup
 1. Clone the repository or download the source code.
-2. Ensure you have a properly formatted data.json file in the project's root directory.
+2. Ensure you have a properly formatted data.json file.
 
 ## Usage
-1. Run with `python serve.py`
+1. Run with `python serve.py /path/to/data.json`
 2. Go to http://localhost:8000
 
 ## Data Format
