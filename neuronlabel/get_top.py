@@ -9,10 +9,10 @@ from tqdm import tqdm
 import torch.nn as nn
 import numpy as np
 
+from datasets import load_dataset
+
 import transformer_lens
 from transformer_lens import HookedTransformer
-
-from datasets import load_dataset
 from transformer_lens import utils as tutils
 
 
