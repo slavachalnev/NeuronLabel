@@ -4,49 +4,48 @@ import openai
 
 openai.api_key = os.environ["OAIKEY"]
 
+
+TASK_EXPLANATION = "Create a rule unifying the following snippets and determine if the rule \
+explains most of the snippets (say 'EXPLAINS') or does not explain most of the snippets (say 'DOES NOT EXPLAIN') \n\n\
+The text is split into HIGH TOKENS (the rule should explain these) LOW TOKENS (the rule should not explain these). \
+The snippets are separated by -----.\n\n\
+The output should be of the form:\n\n[RULE]\n[EXPLAINS/DOES NOT EXPLAIN]"
+
+
 def load_data_from_json(file_path):
     with open(file_path, "r") as f:
         data = json.load(f)
     return data
 
+def process_snippet(snippet):
+    token_activation_pairs = snippet["token_activation_pairs"]
+    max_activation = snippet["max_activation"]
+
+    # Normalize activations by dividing by max_activation
+    normalized_activations = [(token, activation / max_activation) for token, activation in token_activation_pairs]
+
+    # Split tokens into segments based on activation levels
+    segments = []
+    current_segment = {"type": None, "tokens": []}
+
+    for token, activation in normalized_activations:
+        segment_type = "HIGH TOKENS" if activation >= 0.8 else "LOW TOKENS"
+
+        if current_segment["type"] != segment_type:
+            if current_segment["tokens"]:
+                segments.append(current_segment)
+            current_segment = {"type": segment_type, "tokens": []}
+
+        current_segment["tokens"].append(token)
+
+    if current_segment["tokens"]:
+        segments.append(current_segment)
+
+    return "\n-----\n"+"\n\n".join([f"{segment['type']}\n{''.join(segment['tokens'])}" for segment in segments]) + "\n"
+
 def process_snippets_into_prompt(snippets):
-    task_explanation = "Create a rule unifying the following snippets and determine if the rule is interpretable (say 'Interpretable') or not interpretable (say 'Not Interpretable')."
-
-    processed_snippets = []
-    for snippet in snippets:
-        token_activation_pairs = snippet["token_activation_pairs"]
-        max_activation = snippet["max_activation"]
-
-        # Normalize activations by dividing by max_activation
-        normalized_activations = [(token, activation / max_activation) for token, activation in token_activation_pairs]
-
-        # Initialize variables to store token segments
-        current_segment = []
-        current_high_activation = normalized_activations[0][1] >= 0.8
-
-        # Split tokens into segments based on activation levels
-        for token, activation in normalized_activations:
-            is_high_activation = activation >= 0.8
-
-            # Check if the current token's activation level is different from the current segment's activation level
-            if is_high_activation != current_high_activation:
-                # Save the current segment
-                segment_type = "HIGH:" if current_high_activation else "LOW:"
-                processed_snippets.append(f"{segment_type}\n{''.join(current_segment)}")
-
-                # Start a new segment with the current token
-                current_segment = [token]
-                current_high_activation = is_high_activation
-            else:
-                # Add the current token to the current segment
-                current_segment.append(token)
-
-        # Save the last segment
-        segment_type = "HIGH:" if current_high_activation else "LOW:"
-        processed_snippets.append(f"{segment_type}\n{''.join(current_segment)}")
-
-    # Concatenate task explanation and processed snippets
-    prompt = task_explanation + "\n\n" + "\n\n".join(processed_snippets) + "\n\n"
+    processed_snippets = [process_snippet(snippet) for snippet in snippets]
+    prompt = f"{TASK_EXPLANATION}\n\n{''.join(processed_snippets)}\n\n [RULE]\n"
     return prompt
 
 
@@ -69,8 +68,8 @@ def main():
         snippets = neuron["snippets"]
         prompt = process_snippets_into_prompt(snippets)
         gpt_response = call_gpt_api(prompt)
-        print(f"Neuron {neuron['neuron_id']}: {gpt_response}")
-        break
+        print(f"Neuron {neuron['neuron_id']}:\n{gpt_response}")
+        print()
 
 if __name__ == "__main__":
     main()
