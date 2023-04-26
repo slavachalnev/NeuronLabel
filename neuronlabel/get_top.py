@@ -74,9 +74,9 @@ def store_results_to_json(best_examples: List[List[Dict]], tokenizer, filename: 
     Stores the top k activations for each neuron along with the corresponding input tokens in a JSON file.
     """
 
-    results = {}
+    results = []
     for neuron_best_examples in best_examples:
-        examples = []
+        snippets = []
         for example in neuron_best_examples:
             neuron = example["neuron"]
             tokens = example["tokens"]
@@ -92,13 +92,16 @@ def store_results_to_json(best_examples: List[List[Dict]], tokenizer, filename: 
             # Create token-activation pairs for the chunk of tokens and activations
             token_activation_pairs = [(tokenizer.decode(token), activation) for token, activation in zip(chunk_tokens, chunk_activations)]
 
-            examples.append({
+            snippets.append({
                 "text": tokens_text,
                 "max_activation": max_activation,
                 "token_activation_pairs": token_activation_pairs
             })
 
-        results[str(neuron)] = examples
+        results.append({
+            "neuron_id": str(neuron),
+            "snippets": snippets
+        })
 
     with open(filename, 'w') as f:
         json.dump(results, f, indent=4)
