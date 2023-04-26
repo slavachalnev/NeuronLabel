@@ -1,7 +1,6 @@
-datasets==2.11.0
-numpy==1.21.5
-numpy==1.24.3
-torch==2.0.0
-tqdm==4.64.0
-tqdm==4.65.0
-transformer_lens==1.2.2
+datasets>=2.10.1
+numpy>=1.24.2
+tokenizers>=0.13.2
+torch>=1.13.1
+tqdm>=4.65.0
+transformer-lens @ git+https://github.com/neelnanda-io/TransformerLens
