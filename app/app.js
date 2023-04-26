@@ -22,10 +22,13 @@ function displaySnippets(snippets) {
     const snippetDiv = document.createElement("div");
     snippetDiv.className = "snippet";
 
+    const maxActivation = snippet.max_activation;
+
     snippet.token_activation_pairs.forEach(([token, activation]) => {
+      const normalizedActivation = activation / maxActivation;
       const tokenElement = document.createElement("span");
       tokenElement.className = "token";
-      tokenElement.style.backgroundColor = `rgba(255, 0, 0, ${activation})`;
+      tokenElement.style.backgroundColor = `rgba(255, 0, 0, ${normalizedActivation})`;
       tokenElement.textContent = token;
       snippetDiv.appendChild(tokenElement);
     });
@@ -33,6 +36,7 @@ function displaySnippets(snippets) {
     snippetsContainer.appendChild(snippetDiv);
   });
 }
+
 
 function nextNeuron() {
   currentNeuronIndex++;
@@ -84,12 +88,12 @@ function downloadResults() {
 function renderSnippets() {
   snippetsContainer.innerHTML = ""; // Clear the snippets container
 
-  if (currentNeuronIndex >= Object.keys(data).length) {
+  if (currentNeuronIndex >= data.length) {
     alert("All neurons have been evaluated.");
     return;
   }
 
-  displaySnippets(data[Object.keys(data)[currentNeuronIndex]]);
+  displaySnippets(data[currentNeuronIndex].snippets);
 }
 
 const clearResultsButton = document.getElementById("clear-results");
