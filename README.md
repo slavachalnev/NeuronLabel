@@ -10,11 +10,6 @@ Neuron Label is a simple tool for visually analyzing and labeling the interpreta
 
 `neuronlabel/ask_gpt.py` can be used to automate the labeling process using GPT-3.
 
-
-## Setup
-1. Clone the repo.
-2. Ensure you have a properly formatted data.json file.
-
 ## Usage
 1. Run with `python serve.py /path/to/data.json`
 2. Go to http://localhost:8000
@@ -43,9 +38,9 @@ The data.json file should have the following format:
 ]
 ```
 
-`neuron_id` is the identifier of the neuron, and each `neuron_id` has an array of text snippets associated with it. Each text snippet object contains the following properties:
+`neuron_id` is the identifier of the neuron, and each `neuron_id` has a `snippets` array associated with it. Each text snippet has the following properties:
 
 - `text`: The text snippet itself.
 - `max_activation`: The maximum activation value of the neuron for this snippet.
-- `token_activation_pairs`: An array of pairs, where each pair consists of a token and its corresponding activation value.
+- `token_activation_pairs`: An array of tuple, where each tuple consists of a token and its corresponding activation value.
 
