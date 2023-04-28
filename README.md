@@ -1,6 +1,15 @@
 # NeuronLabel
 Neuron Label is a simple tool for visually analyzing and labeling the interpretability of neurons in a neural network. The tool displays text snippets with activated tokens highlighted in varying shades of red based on their activation values. Users can label neurons as "Interpretable" or "Not Interpretable" and download the results in a JSON format.
 
+<!-- image of screenshot -->
+![screenshot](assets/day.png)
+
+## Additional functionality
+
+`neuronlabel/get_top.py` is a script that can be used to generate the data.json file from a trained model.
+
+`neuronlabel/ask_gpt.py` can be used to automate the labeling process using GPT-3.
+
 
 ## Setup
 1. Clone the repository or download the source code.
