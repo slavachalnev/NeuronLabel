@@ -31,8 +31,8 @@ The data.json file should have the following format:
         "text": "example text 1",
         "max_activation": 0.95,
         "token_activation_pairs": [
-          ("tok1", 0.2),
-          ("tok2", 0.95),
+          ["tok1", 0.2],
+          ["tok2", 0.95],
           ...
         ]
       },
