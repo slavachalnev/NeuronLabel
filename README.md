@@ -12,7 +12,7 @@ Neuron Label is a simple tool for visually analyzing and labeling the interpreta
 
 
 ## Setup
-1. Clone the repository or download the source code.
+1. Clone the repo.
 2. Ensure you have a properly formatted data.json file.
 
 ## Usage
@@ -23,26 +23,24 @@ Neuron Label is a simple tool for visually analyzing and labeling the interpreta
 The data.json file should have the following format:
 
 ```json
-{
-  "neuron_id": [
-    {
-      "text": "example text snippet",
-      "max_activation": 2.3037002086639404,
-      "token_activation_pairs": [
-        [
-          "token1",
-          0.1
-        ],
-        [
-          "token2",
-          0.5
-        ],
-        ...
+[
+  {
+    "neuron_id": "0",
+    "snippets": [
+      {
+        "text": "example text 1",
+        "max_activation": 0.95,
+        "token_activation_pairs": [
+          ("tok1", 0.2),
+          ("tok2", 0.95),
+          ...
+        ]
+      },
+      ...
       ]
-    },
-    ...
-  ]
-}
+  },
+  ...
+]
 ```
 
 `neuron_id` is the identifier of the neuron, and each `neuron_id` has an array of text snippets associated with it. Each text snippet object contains the following properties:
