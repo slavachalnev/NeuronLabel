@@ -9,6 +9,7 @@ body {
   }
   .token {
     display: inline;
+    word-break: break-all;
   }
   .button-container {
     display: flex;
