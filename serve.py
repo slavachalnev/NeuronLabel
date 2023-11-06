@@ -5,6 +5,7 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 class CustomHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
+        os.chdir(os.path.dirname(__file__))
         if path == "/data.json":
             return os.path.abspath(self.server.data_json_path)
         return super().translate_path(path)
