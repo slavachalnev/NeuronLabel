@@ -17,13 +17,30 @@ fetch("data.json")
 
 let currentNeuronIndex = 0;
 
-function displaySnippets(snippets) {
+function displaySnippets(snippets, neuronId) {
   snippets.forEach((snippet) => {
     const snippetDiv = document.createElement("div");
     snippetDiv.className = "snippet";
 
-    const maxActivation = snippet.max_activation;
+    // Create and append the neuron ID element
+    const neuronIdElement = document.createElement("div");
+    neuronIdElement.className = "neuron-id";
+    neuronIdElement.textContent = `Neuron ID: ${neuronId}`;
+    snippetDiv.appendChild(neuronIdElement);
 
+    // Create and append the max activation element
+    const maxActivation = snippet.max_activation;
+    const maxActivationElement = document.createElement("div");
+    maxActivationElement.className = "max-activation";
+    maxActivationElement.textContent = `Max Activation: ${maxActivation}`;
+    snippetDiv.appendChild(maxActivationElement);
+
+    // spacing
+    const spacingElement = document.createElement("div");
+    spacingElement.className = "spacing";
+    snippetDiv.appendChild(spacingElement);
+
+    // Existing code for token_activation_pairs
     snippet.token_activation_pairs.forEach(([token, activation]) => {
       const normalizedActivation = activation / maxActivation;
       const tokenElement = document.createElement("span");
@@ -36,6 +53,7 @@ function displaySnippets(snippets) {
     snippetsContainer.appendChild(snippetDiv);
   });
 }
+
 
 
 function nextNeuron() {
@@ -88,12 +106,14 @@ function downloadResults() {
 function renderSnippets() {
   snippetsContainer.innerHTML = ""; // Clear the snippets container
 
-  if (currentNeuronIndex >= data.length) {
+  if (currentNeuronIndex >= Object.keys(data).length) {
     alert("All neurons have been evaluated.");
     return;
   }
 
-  displaySnippets(data[currentNeuronIndex].snippets);
+  const neuronId = Object.keys(data)[currentNeuronIndex];
+  const neuron_name = data[neuronId].neuron_id;
+  displaySnippets(data[neuronId].snippets, neuron_name);
 }
 
 const clearResultsButton = document.getElementById("clear-results");

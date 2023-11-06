@@ -117,7 +117,7 @@ def main(model, dataset_loader, save_path):
     store_results_to_json(best_examples=top_k_examples, tokenizer=tokenizer, filename=save_path)
 
 if __name__ == "__main__":
-    model_name = "gelu-4l"
+    model_name = "solu-4l"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = HookedTransformer.from_pretrained(model_name, device=device)
 
